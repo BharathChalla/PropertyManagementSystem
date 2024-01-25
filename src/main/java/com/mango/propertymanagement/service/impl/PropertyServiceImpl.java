@@ -14,10 +14,14 @@ import java.util.Optional;
 @Service
 public class PropertyServiceImpl implements PropertyService {
 
+    private final PropertyRepository propertyRepository;
+    private final PropertyConverter propertyConverter;
+
     @Autowired
-    private PropertyRepository propertyRepository;
-    @Autowired
-    private PropertyConverter propertyConverter;
+    public PropertyServiceImpl(PropertyRepository propertyRepository, PropertyConverter propertyConverter) {
+        this.propertyRepository = propertyRepository;
+        this.propertyConverter = propertyConverter;
+    }
 
     @Override
     public PropertyDTO saveProperty(PropertyDTO propertyDTO) {
@@ -41,8 +45,6 @@ public class PropertyServiceImpl implements PropertyService {
         PropertyEntity propertyEntity = propertyEntityOptional.get();
         propertyEntity.setTitle(propertyDTO.getTitle());
         propertyEntity.setDescription(propertyDTO.getDescription());
-        propertyEntity.setOwnerName(propertyDTO.getOwnerName());
-        propertyEntity.setOwnerEmail(propertyDTO.getOwnerEmail());
         propertyEntity.setPrice(propertyDTO.getPrice());
         propertyEntity.setAddress(propertyDTO.getAddress());
         propertyEntity = propertyRepository.save(propertyEntity);
