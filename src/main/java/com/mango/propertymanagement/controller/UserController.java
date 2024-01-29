@@ -2,6 +2,7 @@ package com.mango.propertymanagement.controller;
 
 import com.mango.propertymanagement.dto.UserDTO;
 import com.mango.propertymanagement.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +22,13 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<UserDTO> registerUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserDTO> registerUser(@Valid @RequestBody UserDTO userDTO) {
         userDTO = userService.registerUser(userDTO);
         return new ResponseEntity<>(userDTO, HttpStatus.CREATED);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserDTO> loginUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserDTO> loginUser(@Valid @RequestBody UserDTO userDTO) {
         userDTO = userService.loginUser(userDTO.getOwnerEmail(), userDTO.getPassword());
         if (userDTO == null) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
