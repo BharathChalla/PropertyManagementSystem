@@ -1,5 +1,7 @@
 package com.mango.propertymanagement.exception;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -13,11 +15,15 @@ import java.util.List;
 @ControllerAdvice
 public class CustomExceptionHandler {
 
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<List<ErrorModel>> handleFieldValidation(MethodArgumentNotValidException exception) {
         List<FieldError> fieldErrors = exception.getBindingResult().getFieldErrors();
         List<ErrorModel> errorModelList = new ArrayList<>();
         for (FieldError fieldError : fieldErrors) {
+            logger.debug("Inside Field Validation: {} - {}", fieldError.getField(), fieldError.getDefaultMessage());
+            logger.info("Inside Field Validation: {} - {}", fieldError.getField(), fieldError.getDefaultMessage());
             ErrorModel errorModel = new ErrorModel();
             errorModel.setErrorCode(fieldError.getField());
             errorModel.setMessage(fieldError.getDefaultMessage());
@@ -29,8 +35,10 @@ public class CustomExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<List<ErrorModel>> handleBusinessException(BusinessException businessException) {
         businessException.getErrors().forEach(errorModel -> {
-            System.out.println("Error Code: " + errorModel.getErrorCode());
-            System.out.println("Error Message: " + errorModel.getMessage());
+            logger.debug("BusinessException is thrown - Level(debug): {} - {}", errorModel.getErrorCode(), errorModel.getMessage());
+            logger.info("BusinessException is thrown - Level(info): {} - {}", errorModel.getErrorCode(), errorModel.getMessage());
+            logger.warn("BusinessException is thrown - Level(warn): {} - {}", errorModel.getErrorCode(), errorModel.getMessage());
+            logger.error("BusinessException is thrown - Level(error): {} - {}", errorModel.getErrorCode(), errorModel.getMessage());
         });
         return new ResponseEntity<>(businessException.getErrors(), HttpStatus.BAD_REQUEST);
     }
