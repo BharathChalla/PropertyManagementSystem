@@ -41,10 +41,17 @@ public class PropertyController {
             summary = "Get all properties",
             description = "This API gets all properties from the database."
     )
+
     @GetMapping("/all")
     @RequestMapping(value = "", method = RequestMethod.GET)
     public ResponseEntity<List<PropertyDTO>> getAllProperties() {
         List<PropertyDTO> propertyDTOList = propertyService.getAllProperties();
+        return new ResponseEntity<>(propertyDTOList, HttpStatus.OK);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<PropertyDTO>> getAllPropertiesForUser(@PathVariable("userId") Long userId) {
+        List<PropertyDTO> propertyDTOList = propertyService.getAllPropertiesForUser(userId);
         return new ResponseEntity<>(propertyDTOList, HttpStatus.OK);
     }
 
